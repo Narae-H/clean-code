@@ -286,7 +286,8 @@ function paintCar(car, color) {
 - 자주 발생하는 에러인 만큼 '어떻게 잘 방지할까'에 대해서 심도있게 생각해 본적은 없었는데 이 기회에 한번 집고 넘어가게 되서 좋았다.
 - 개발을 하다보면 그냥 막연하게 익히고 사용하는 습관들이 있는데(ex. null을 반환하지 않게 조심하는 그런 습관), 그런 것들이 어떠한 용어를 가지고 있고 일정한 개발 패턴(?)에 의해서 쓰이고 있다는 것을 알게되니 신기하다. 
 
-## 공부법 공
+## 공부법 공유
+<img src='https://github.com/Narae-H/clean-code/blob/main/how%20to%20study.png?raw=true' width='90%'/>
 <br/>
 <br/>
 
