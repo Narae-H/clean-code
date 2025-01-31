@@ -349,5 +349,8 @@ function paintCar(car, color) {
  
 ## 오늘 읽은 소감은?
 - 사실 개발을 하면서 테스트 코드의 중요성을 생각해 본적이 없었는데, 오늘 이 챕터를 읽고나서 테스트 코드의 장점을 배우게 되었다.
+
+## 최애 독서 감상문
+- [최애 도서 감상문](https://cindybaby.notion.site/Clean-Code-a7c3fe32a620430e814a5759936a982d?p=fa2234bb8ca141d585d0d6ea8353ee1c&pm=s): 체계적으로 잘 정리되어있어서 좋았다.
 <br/>
 <br/>
