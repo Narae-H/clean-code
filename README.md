@@ -357,7 +357,9 @@ function paintCar(car, color) {
 
 # 10장. 클래스
 ## TIL
-- 클래스 체계는 **추상화 단계가 순차적으로 내려**간다: 변수 -> 정적 공개 상수 -> 정적 비공개 변수 -> 비공개 인스턴스 변수 -> 공개 변수 -> 공개 함수 -> 비공개 함수
+- 클래스 체계는 **추상화 단계가 순차적으로 내려**간다: 변수목록 -> 함수
+  - 변수목록: 정적(static) 공개(public) 상수 -> 정적(static) 비공개(private) 변수 -> 비공개 인스턴스 변수 -> 공개 변수
+  - 함수: 공개 함수 -> 비공개 함수
 - 클래스는 **작아야** 한다: 함수와 마찬가지로 크기가 작으면 작을 수록 좋다. 여기서 크기란 `**책임**이 작으면 작을수록 좋다`는 뜻이다.
   - 클래스 이름은 해당 클래스의 책임을 기술: 작명은 클래스 크기를 줄이는 첫번째 관문
   - 단일 책임 원칙(Single Responsibility Principle): 클래스나 모듈을 변경할 이유가 하나뿐이여야 한다는 원칙
@@ -374,5 +376,141 @@ function paintCar(car, color) {
 - 책을 읽다보니 계속 강조하는 것들이 보이기 시작하는데 그건 바로 프로그램 무조건 작게 만들라는 것이다.
 - 처음에는 이 말이 잘 이해가 가지 않았는데, *작은 클래스가 많은 시스템이든 큰 클래스가 몇 개뿐인 시스템이든 돌아가는 부품은 그 수와 비슷하다* 라는 문구를 보고 이마를 탁쳤다.
 - 결국 그 수가 비슷하다면 작게 만드는 것이 코드를 이해하기가 훨씬 쉽고, 코드를 읽어야 할 부분도 줄어들고(큰 클래스가 많다면 코드를 따라가다보면 필요없는 부분까지도 봐야할 것이다), 수정할때도 최소로 코드를 건들어도 되니 훨씬 이득이다.
+<br/>
+<br/>
+
+# 복습 & 과제
+## 오늘의 과제: 예시 만들기
+- 클린코드 읽으며 뼈맞았던 내용 중 **`3가지 원칙`** 을 고르고, 원칙 따르는 예시 총 3가지를 만들어보세요.
+
+### 원칙 1. 함수 인수(Argument)가 4개 이상일 경우, 성격이 비슷한 인수를 묶어서 클래스화하여 인수의 개수를 줄여라.
+- `Before`: 
+```java
+class OrderProcessor {
+  public void processOrder(String customerName, String customerAddress, String customerPhone, String productName, int quantity, double price) {
+    System.out.println("Processing order for: " + customerName);
+  }
+}
+```
+- 문제점: 
+  - 위 함수는 6개의 arguments를 전달받고 있음 (4개 이상인 경우 수정 필요).
+  - 인수가 많아서 함수 호출 시 가독성이 떨어지고, 유지보수가 어려움.
+  - customerName, customerAddress, customerPhone에서 `customer`가 불필요하게 반복되고 있음.
+  - arguments는 고객정보(customer)와 주문 상품정보(order)로 구분할 수 있으므로 클래스화 하여 인수의 개수 수정 가능.
+<br/>
+
+- `After`:
+```java
+class OrderProcessor {
+  public void processOrder(Customer customer, Order order) {
+    System.out.println("Processing order for: " + customer.getName());
+  }
+}
+```
+
+```java
+@Data
+class Customer () {
+  private String name = "";
+  private String address= "";
+  private String phone = "";
+
+  public Customer(String name, String address, String phone) {
+    this.name = name;
+    this.address = address;
+    this.phone = phone;
+  }
+```
+
+```java
+@Data
+class Order () {
+  private String productName = "";
+  private int quantity= "";
+  private double price = "";
+
+  @data
+  public Order(String name, int quantity, double price) {
+    this.name = name;
+    this.quantity = quantity;
+    this.price = price;
+  }
+```
+
+- 수정사항: 
+  - Customer, Order 클래스를 생성하고 이 객체를 OrderProcessor()의 arguments로 받음.
+  - Cusomer 클래스의 경우 중복되는 'customer' 문구를 삭제
+<br/>
+
+### 원칙 2. 미확인 예외는 try-catch/throws를 사용하지 않는다
+- `Before`: 
+```java
+class DivisionCalculator {
+  public int divide(int a, int b) throws ArithmeticException {
+    try {
+      return a / b;
+    } catch(ArithmeticException e) {
+      throw e;
+    }
+  }
+}
+```
+- 문제점: 
+  - b가 0인 경우는 런타임 예외(컴파일 에러나는 경우가 아님)로 throws를 사용하지 않고 조건문을 통해 예외를 사전에 방지하는 것이 좋음.
+
+- `After`:
+```java
+class DivisionCalculator {
+  public int divide(int a, int b) {
+    if (b == 0) {
+      return 0;  // 또는 적절한 기본값을 반환하거나 다른 로직 처리
+    }
+    return a / b;
+  }
+}
+```
+- 수정사항: 
+  - 예외를 발생시키지 않도록, 미리 조건을 체크하여 사전 방지
+  - 예외 발성 가능성을 최소화 하여 코드의 안정성을 높임.
+<br/>
+
+### 원칙 3. 클래스 체계는 추상화 단계가 순차적으로 내려간다 변수의 경우, '정적 공개 상수 -> 정적 비공개 변수 -> 비공개 인스턴스 변수 -> 공개 변수'를 따름.
+- `Before`: 
+```java
+@Data
+class ConfigManager {
+  private String dbUrl;
+  public static final String DEFAULT_DB_URL = "jdbc:mysql://localhost:3306/db";
+  public String appName;
+  private static int instanceCount = 0;
+
+  public ConfigManager(String dbUrl) {
+    this.dbUrl = dbUrl;
+    instanceCount++;
+  }
+}
+```
+- 문제점: 
+  - 변수 선언이 순차적으로 내려가는게 아니라 뒤죽박죽 섞여있음.
+
+- `After`:
+```java
+@Data
+class ConfigManager {
+  public static final String DEFAULT_DB_URL = "jdbc:mysql://localhost:3306/db"; // 정적 공개 상수
+  private static int instanceCount = 0; // 정적 비공개 변수
+  private String dbUrl;  // 비공개 인스턴스 변수 
+  public String appName; // 공개 변수
+  
+
+  public ConfigManager(String dbUrl) {
+    this.dbUrl = dbUrl;
+    instanceCount++;
+  }
+}
+```
+- 수정사항:
+  - 가독성을 높히기 위해, 클래스 내 변수를 추상화 단계에 따라 순서대로 배치.
+
 <br/>
 <br/>
